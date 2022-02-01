@@ -4,6 +4,7 @@ from time import sleep, time
 import paho.mqtt.client as mqtt
 from lights import Element
 from config import *
+import sys
 
 from knx import Knx
 
@@ -60,7 +61,7 @@ def on_message(client, userdata, msg):
 
 
     except Exception as e:
-        print("something went wrong: " + e)
+        sys.exit("something went wrong: %s" % str(e))
 
 
 client:mqtt.Client = mqtt.Client()
