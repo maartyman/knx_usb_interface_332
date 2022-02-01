@@ -1,3 +1,6 @@
+#don't include personal files
+src/config.py
+
 # Prerequisites
 *.d
 
