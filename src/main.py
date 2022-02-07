@@ -47,7 +47,12 @@ def on_message(client, userdata, msg):
             print("switch: " + element.groupAdress + " " + payload)
 
             if (element.dimmable):
-                knx.writeValueByte(element.groupAdress, int(payload))
+                if (int(payload) == 255):
+                    knx.writeOn(element.secondAdress)
+                elif (int(payload) == 0):
+                    knx.writeOff(element.secondAdress)
+                else:
+                    knx.writeValueByte(element.groupAdress, int(payload))
                 print("/" + "/".join(split[1:]), " : ", int(payload))
                 client.publish("/" + "/".join(split[1:]), int(payload))
             elif (payload == "on"):
@@ -111,13 +116,16 @@ while(run):
                 if LIGHTS[key].groupAdress == data[1]:
                     client.publish(key, data[3])
                     break
+                elif LIGHTS[key].secondAdress == data[1]:
+                    if data[3] == "on":
+                        client.publish(key, 255)
+                    if data[3] == "off":
+                        client.publish(key, 0)
+                    break
         elif data[2] == 1:
             for key in LIGHTS.keys():
                 if LIGHTS[key].groupAdress == data[1]:
                     client.publish(key, data[3])
-                    break
-                elif LIGHTS[key].secondAdress == data[1]:
-                    knx.getState(LIGHTS[key].groupAdress)
                     break
         elif data[2] == 2:
             for key in LIGHTS.keys():
